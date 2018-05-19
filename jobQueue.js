@@ -1,28 +1,50 @@
-const kue = require('kue');
-const jobs = kue.createQueue();
+var kue = require('kue');
+
+// create our job queue
+
+var queue = kue.createQueue();
+const axios = require("axios");
 
 
-function newJob (name){
- const job = jobs.create('new_job', {
-   name: name
- });
+function create() {
+  var job  = queue.create( 'url', {
+    title: 'Doing this google thang',
+    url: 'https://www.google.com/',
+    html: null
+  } );
 
- job
-  .on('complete', function (){
-    console.log('Job', job.id, 'with name', job.data.name, 'is done');
-  })
-  .on('failed', function (){
-    console.log('Job', job.id, 'with name', job.data.name, 'has failed');
-  })
 
-job.save();
+  // I wonder if i update it with the data here......
+  job.on( 'complete', function () {
+    console.log( " Job complete" );
+  } ).on( 'failed', function () {
+    console.log( " Job failed" );
+  } ).on( 'progress', function ( progress ) {
+    console.log('in progress');
+  } );
+
+  job.save(() => console.log(job.id));
 }
 
+create();
 
-jobs.process('new_job', function (job, done){
- console.log('Job', job.id, 'is done');
- done && done();
-})
+queue.process('url', function(job, done){
+  fetchSomething(job.data.url, done);
+});
 
+const fetchSomething = async (url,done) => {
+  try {
+      const response = await axios.get(url);
+      const data = await response.data;
+      // do I return something here?
+      // I think it got here, now I just have to figure out how to store
+      // what I get back!
+      done();
+  } catch(error) {
+      return done(error);
+  }
+}
 
-setInterval(newJob, 3000);
+// start the UI
+kue.app.listen( 3002 );
+console.log( 'UI started on port 3000' );
