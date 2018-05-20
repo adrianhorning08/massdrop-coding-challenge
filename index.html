@@ -5,6 +5,18 @@
     <title>Massdrop</title>
   </head>
   <body>
-    hello
+    <form id="form" action="index.html" method="post">
+      Enter url
+      <input type="text" name="url" value="">
+      <button>Submit</button>
+    </form>
+    <script type="text/javascript">
+      let form = document.getElementById('form')
+      form.onsubmit = function(e) {
+        e.preventDefault();
+        console.log(form.url.value);
+      }
+
+    </script>
   </body>
 </html>

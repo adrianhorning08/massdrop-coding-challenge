@@ -2,13 +2,10 @@ var kue = require('kue');
 var queue = kue.createQueue();
 const axios = require("axios");
 
-function create() {
-
-  // it doesnt like when i try to fetch the data here. why?
-
+function create(url) {
   var job  = queue.create( 'url', {
-    title: 'Doing this google thing',
-    url: 'https://www.google.com/',
+    title: 'Fetching HTML from: ' + url,
+    url: url,
     html: null
   })
 
@@ -29,9 +26,6 @@ queue.process('url', function(job, done){
   done();
 });
 
-
-create();
-
 const fetchHTML = async (job) => {
   try {
       const response = await axios.get(job.data.url);
@@ -45,4 +39,6 @@ const fetchHTML = async (job) => {
 
 // start the UI
 kue.app.listen( 3002 );
-console.log( 'UI started on port 3000' );
+console.log( 'UI started on port 3002' );
+
+module.exports = create;
