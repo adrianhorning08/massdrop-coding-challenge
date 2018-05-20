@@ -21,37 +21,18 @@ function create() {
     console.log('in progress');
   } );
 
-  // so the main save gets done before the other one gets called
-  console.log('main save:' + job.id);
-
-  // so.... queue.process doesn't get called until its all done?
-  // that seems dumb, cause the job I want it to do (fetch the html)
-  // is what will take a while
   job.save();
 }
 
 queue.process('url', function(job, done){
-  fetchSomething(job)
+  fetchHTML(job);
   done();
 });
 
-const updateTitle = (job) => {
-  job.data.title = 'hey there';
-  job.update();
-  // changes right here!!!!
-  // why doesn't it get saved??
-  // it looks wrong in my terminal, but...it looks like it worked online...
-
-  // maybe it updates it, but doesn't update it in the database
-
-
-  console.log('updateTitle save:' + job.id);
-
-}
 
 create();
 
-const fetchSomething = async (job) => {
+const fetchHTML = async (job) => {
   try {
       const response = await axios.get(job.data.url);
       const data = await response.data;
@@ -61,8 +42,6 @@ const fetchSomething = async (job) => {
       return error;
   }
 }
-
-
 
 // start the UI
 kue.app.listen( 3002 );
