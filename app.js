@@ -15,7 +15,7 @@ app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
 });
 
-app.get('/jobs/:url', function(req, res) {
+app.post('/jobs', function(req, res) {
   let url = req.params.url;
   let finalUrl = `https://${url}`;
   create(finalUrl)

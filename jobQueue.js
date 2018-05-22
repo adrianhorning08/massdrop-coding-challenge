@@ -1,6 +1,7 @@
 var kue = require('kue');
 var queue = kue.createQueue();
 const axios = require("axios");
+const printId = require('./index.js')
 
 function create(url) {
   var job  = queue.create( 'url', {
@@ -17,12 +18,15 @@ function create(url) {
   } ).on( 'progress', function ( progress ) {
     console.log('in progress');
   } );
+  // something
 
   job.save();
 }
 
 queue.process('url', function(job, done){
   fetchHTML(job);
+  // how to give them the id here.....
+  printId(job.id)
   done();
 });
 

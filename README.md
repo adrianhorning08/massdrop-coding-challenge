@@ -8,3 +8,5 @@ User submits www.google.com to your endpoint. The user gets back a job id. Your 
 
 
 If the job saves, then do a callback
+
+Github and Google work
